@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .chart-container {
+            max-width: 1050px;
+            margin: 0 auto;
+            /* auto centers the div */
+            font-family: 'nyt-franklin", arial, helvetica, sans-serif';
+            
+        }
+
+        svg {
+            /* border: 2px solid purple; */
+            overflow: visible;
+        }
+
+        svg .y.axis .tick line {
+            display: none;
+        }
+
+        svg .y.axis .tick text {
+            font-size: 13px;
+            font-weight: 200;
+        }
+
+        svg .x.axis .tick text {
+            font-size: 13px;
+            font-weight: 200;
+        }
+
+        svg .y.axis .domain {
+            display: none;
+        }
+
+        svg .x.axis .domain {
+            display: none;
+        }
+
+        svg .label {
+            font-size: 20px;
+            font-weight: 200;
+        }
+
+
+        h1 {
+            margin-left: 30px;
+        }
+
+        .source {
+            font-family: "nyt-franklin", arial, helvetica, sans-serif;
+            font-size: 13px;
+            line-height: 17px;
+            margin-top: 50px;
+            margin-left: 30px;
+            color:grey;
+
+        }
+
+        .highlight {
+            color: brown;
+        }
+
+        a {
+            color:black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chart-container">
+        <h1 class="headline">
+            Healthcare by Income in <span class='highlight'>2020</span>
+        </h1>
+
+        <svg width="1050px" height="500px">
+
+        </svg>
+        <p class="source">Note: The income measure used here is <a href="https://www.census.gov/content/dam/Census/topics/income/supplemental-poverty-measure/sum.pdf">disposable income</a>, which is defined as market income plus cash transfers from the government and noncash benefits like food stamps and public housing. It excludes taxes, out-of-pocket medical spending, insurance premiums and other expenses. There have been small changes in the census questionnaire between the two survey dates. Source: Current Population Survey, analysis by Matt Bruenig</p>
+    </div>
+</body>
+
+<!-- add your script blocks at the end -->
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<!-- we're using d3 version 6 (the latest version) for all out work -->
+
+<script>
+    console.log(d3)
+    let width = 800;
+    let height = 500;
+
+    let svg = d3.select("body").select("svg")
+
+    d3.csv("healthcare-disposable-inc.csv").then(function (data) {
+        console.log("loaded")
+        console.log(data)
+
+        let sel_cols = [
+            "Medicaid",
+            "Medicare",
+            "Medicare+Medicaid",
+            "Employer",
+            "Uninsured",
+            "Direct Purchase",
+            "Subsidized Exchange",
+            "CHIP",
+            "Military",
+            "Other"]
+
+        let sel_colors = [
+            "#f44336", // "Medicaid",
+            "#FF9800", // "Medicare",
+            "#FDD835", // "Medicare+Medicaid",
+            "#FFF8E1", // "Employer",
+            "#26A69A", // "Uninsured",
+            "#4DD0E1", // "Direct Purchase",
+            "#F06292", // "Subsidized Exchange",
+            "#5C6BC0", // "CHIP",
+            "#90A4AE", // "Military",
+            "#E0E0E0"  // "Other"
+        ]
+
+        let year_state = 2020;
+        
+        let data09 = [...data].filter(d => d.year == "2009")
+        let data20 = [...data].filter(d => d.year == "2020")
+
+        let margin = { top: 10, right: 10, bottom: 10, left: 30 };
+
+        let series2020 = d3.stack().keys(sel_cols)(data20);
+        let series2009 = d3.stack().keys(sel_cols)(data09);
+
+        let color = d3.scaleOrdinal()
+            .domain(sel_cols)
+            .range(sel_colors)
+
+        let x = d3.scaleLinear()
+            .domain([0, 100])
+            .range([margin.left, width])
+
+        let y = d3.scaleLinear()
+            .domain([0, 1])
+            .range([height - margin.bottom, margin.top])
+
+    //     //https://github.com/d3/d3-shape#areas
+        let area = d3.area()
+            .x(d => x(d.data.Percentile))
+            .y0(d => y(d[0]))
+            .y1(d => y(d[1]))
+
+        let xAxisSettings = d3.axisBottom(x)
+            .tickSize(6)
+            .tickPadding(6)
+            .ticks(10)
+            .tickValues([5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95]) //
+            .tickFormat(d3.format(".0f"))
+
+        let xAxis = svg.append("g")
+            .attr("class", "x axis")
+            .call(xAxisSettings)
+            .call(g => g.selectAll(".domain").remove())
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+
+
+        let yAxisSettings = d3.axisLeft(y)
+            .tickSize(6)
+            .tickPadding(-20)
+            .tickValues([.2, .4, .6, .8])
+            .tickFormat(d3.format(".0%"))
+
+        let yAxis = svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxisSettings)
+            .call(g => g.selectAll(".domain").remove())
+        
+        svg.append("text")
+            .attr("class", "label")
+            .attr("x", 800)
+            .attr("y", 50)
+            .text("Direct Purchase")
+        
+        svg.append("g")
+            .selectAll("path")
+            .data(series2020)
+            .join("path")
+            .attr("class", d =>  {
+                return d.key
+            })
+            .attr("fill", d => color(d.key))
+            .attr("d", area)
+
+        svg.append("text")
+            .attr("class", "label")
+            .attr("x", 500)
+            .attr("y", 250)
+            .text("Employer")
+
+        svg.append("text")
+            .attr("class", "label")
+            .attr("x", 80)
+            .attr("y", 450)
+            .text("Medicaid")
+            .style("fill", "white")
+
+        svg.append("text")
+            .attr("class", "label")
+            .attr("x", 40)
+            .attr("y", 300)
+            .text("Medicare")
+            .style("fill", "white")
+        
+        svg.append("text")
+            .attr("class", "label")
+            .attr("x", 80)
+            .attr("y", 100)
+            .text("Uninsured")
+            .style("fill", "white")
+
+        svg.append("text")
+            .attr("class", "axis-label")
+            .attr("x", width / 2)
+            .attr("y", height + 40)
+            .text("INCOME PERCENTILE")
+            .attr("text-anchor", "middle") //text-anchor controls positioning for SVG text
+  
+
+        let hed = d3.select(".headline")
+        
+        function update() {
+            console.log("update")
+            console.log("old year state " + year_state)
+            
+            if (year_state == 2020) {
+                year_state = 2009
+                dance(series2009)
+                hed.html("Healthcare by Income in <span class='highlight'>2009</span>")
+
+            } else {
+                year_state = 2020
+                dance(series2020)
+
+                hed.html("Healthcare by Income in <span class='highlight'>2020</span>")
+            }
+            console.log("new year state " + year_state);
+        }
+
+        function dance(filtered_data) {
+            svg.append("g")
+                .selectAll("path")
+                .data(filtered_data)
+                .join("path")
+                .attr("class", d =>  {
+                    return d.key})
+                .attr("fill", d => color(d.key))
+                .attr("d", area)
+                .transition()
+                .duration(500)
+                .ease(d3.easeLinear)
+
+            svg.append("text")
+                .attr("class", "label")
+                .attr("x", 500)
+                .attr("y", 250)
+                .text("Employer")
+            
+            svg.append("text")
+                .attr("class", "label")
+                .attr("x", 80)
+                .attr("y", 450)
+                .text("Medicaid")
+                .style("fill", "white")
+            
+            svg.append("text")
+                .attr("class", "label")
+                .attr("x", 80)
+                .attr("y", 100)
+                .text("Uninsured")
+                .style("fill", "white")
+            
+            if (filtered_data == series2020) {
+                svg.append("text")
+                    .attr("class", "label")
+                    .attr("x", 40)
+                    .attr("y", 300)
+                    .text("Medicare")
+                    .style("fill", "white")
+
+            } else {
+                svg.append("text")
+                    .attr("class", "label")
+                    .attr("x", 60)
+                    .attr("y", 340)
+                    .text("Medicare")
+                    .style("fill", "white")
+            }
+            
+        }
+
+        var timer = d3.interval(update, 3000) //in milliseconds
+
+    })
+
+</script>
