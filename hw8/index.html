@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .chart-container {
+            max-width: 1800px;
+            margin: auto auto;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        svg {
+            overflow: visible;
+        }
+
+
+        h1 {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+
+        .popup {
+            position: absolute;
+            border: 0.5px solid maroon;
+            background-color: white;
+            padding: 5px;
+            opacity: 0;
+        }
+    </style>
+    <!-- add your script blocks at the end -->
+
+</head>
+
+<body>
+    <div class="chart-container">
+        <h1 class="headline">
+            Vaccine Hesitancy for COVID-19: County and local estimates
+        </h1>
+
+        <svg width="1800px" height="700px">
+            
+        </svg>
+
+        <img src="simple-key.svg"></image>
+        <div class="popup"></div>
+        <p>Source: PUMA COVID-19 Hesitancy Data
+    </div>
+</body>
+
+
+<!-- we're using d3 version 6 (the latest version) for all out work -->
+<script src="https://d3js.org/d3.v6.min.js"></script>
+
+<!-- load topojson script -->
+<script src="https://unpkg.com/topojson@3"></script>
+
+<script>
+    let width = 800;
+    let height = 600;
+
+    Promise.all([
+        d3.json('topo.json'),
+    ])
+        .then(ready)
+        .catch((err) => {
+            console.log(err);
+        });
+
+    function ready(res) {
+        let svg = d3.select("body").select("svg")
+        
+        console.log(res[0])
+        let raw = res[0]
+
+        let counties = topojson.feature(raw, raw.objects.county);
+
+        let myProjection = d3.geoIdentity()
+            .fitSize([width, height], counties)
+            .reflectY(true)
+
+        //path function
+        let path = d3.geoPath()
+            .projection(myProjection)
+
+        var color = d3.scaleThreshold()
+            .domain([0.09,0.108,0.126,0.144,0.162,0.18])
+            .range(["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#807dba", "#6a51a3", "#4a1486"]);
+       
+        let blocks = svg.append("g")
+            .attr("class","counties")
+            .selectAll("path")
+            .data(counties.features)
+            .join("path")
+            .attr("d", path)
+            .style("fill", function(d) {
+                return color(d.properties.EstimatedHesitant);
+            })
+            .style("stroke", "lightgrey")
+            .style("stroke-width", 0.5)
+
+        let popup = d3.select(".popup")
+        
+        blocks.on("mouseover", (pointer_event, d) => {
+            svg.select(".p-" + d.properties.GEOID)
+                .style("stroke-width", 10)
+                .style("opacity", 0.5)
+                .raise()
+            
+            popup.style("opacity", 1)
+                .style("left", (pointer_event.x + 20) + "px")
+                .style("top", (pointer_event.y - 20) + "px")
+                .html("In " + "<b>" + d.properties.CountyName + "</b>, the estimated hesitant rate is " + "<b>" + d.properties.EstimatedHesitant + "</b>" + ".")     
+        })
+
+        blocks.on("mouseout", (pointer_event, d) => {
+            svg.select(".p-" + d.properties.GEOID)
+                .style("stroke-width", 0.5)
+                .style("opacity", 0.5)
+                .raise()
+            
+            popup.style("opacity", 0)
+            })
+
+    }
+
+</script>
