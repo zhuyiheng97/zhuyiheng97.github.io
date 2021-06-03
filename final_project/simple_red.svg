@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny" width="300" height="31" viewBox="0 0 300 31" stroke-linecap="butt" stroke-linejoin="round">
+<style>
+  path {shape-rendering: crispEdges;}
+</style>
+<g id="layer22">
+<path d="M 1 10.93 1 1 30.8 1 30.8 10.93 1 10.93 Z" fill="rgb(255, 245, 240)"/>
+<path d="M 30.8 10.93 30.8 1 60.6 1 60.6 10.93 30.8 10.93 Z" fill="rgb(254, 224, 211)"/>
+<path d="M 60.6 10.93 60.6 1 90.4 1 90.4 10.93 60.6 10.93 Z" fill="rgb(253, 195, 172)"/>
+<path d="M 90.4 10.93 90.4 1 120.2 1 120.2 10.93 90.4 10.93 Z" fill="rgb(252, 160, 130)"/>
+<path d="M 120.2 10.93 120.2 1 150 1 150 10.93 120.2 10.93 Z" fill="rgb(251, 124, 92)"/>
+<path d="M 150 10.93 150 1 179.8 1 179.8 10.93 150 10.93 Z" fill="rgb(245, 85, 61)"/>
+<path d="M 179.8 10.93 179.8 1 209.6 1 209.6 10.93 179.8 10.93 Z" fill="rgb(226, 48, 40)"/>
+<path d="M 209.6 10.93 209.6 1 239.4 1 239.4 10.93 209.6 10.93 Z" fill="rgb(194, 24, 28)"/>
+<path d="M 239.4 10.93 239.4 1 269.2 1 269.2 10.93 239.4 10.93 Z" fill="rgb(155, 13, 20)"/>
+<path d="M 269.2 10.93 269.2 1 299 1 299 10.93 269.2 10.93 Z" fill="rgb(103, 0, 13)"/>
+</g>
+<g id="layer23" fill="none" stroke="black" stroke-width="1">
+<path d="M 30.8 1 30.8 16.89" stroke="rgba(0,0,0,0.3)"/>
+<path d="M 60.6 1 60.6 16.89" stroke="rgba(0,0,0,0.3)"/>
+<path d="M 90.4 1 90.4 16.89" stroke="rgba(0,0,0,0.3)"/>
+<path d="M 120.2 1 120.2 16.89" stroke="rgba(0,0,0,0.3)"/>
+<path d="M 150 1 150 16.89" stroke="rgba(0,0,0,0.3)"/>
+<path d="M 179.8 1 179.8 16.89" stroke="rgba(0,0,0,0.3)"/>
+<path d="M 209.6 1 209.6 16.89" stroke="rgba(0,0,0,0.3)"/>
+<path d="M 239.4 1 239.4 16.89" stroke="rgba(0,0,0,0.3)"/>
+<path d="M 269.2 1 269.2 16.89" stroke="rgba(0,0,0,0.3)"/>
+</g>
+<g id="layer24" font-family="sans-serif" font-size="12" text-anchor="middle">
+<text y="0" x="0" transform="translate(30.8 29.906)" font-family="sans-serif" font-size="13" text-anchor="middle" fill="#555">0.09</text>
+<text y="0" x="0" transform="translate(60.6 29.906)" font-family="sans-serif" font-size="13" text-anchor="middle" fill="#555">0.1</text>
+<text y="0" x="0" transform="translate(90.4 29.906)" font-family="sans-serif" font-size="13" text-anchor="middle" fill="#555">0.12</text>
+<text y="0" x="0" transform="translate(120.2 29.906)" font-family="sans-serif" font-size="13" text-anchor="middle" fill="#555">0.13</text>
+<text y="0" x="0" transform="translate(150 29.906)" font-family="sans-serif" font-size="13" text-anchor="middle" fill="#555">0.15</text>
+<text y="0" x="0" transform="translate(179.8 29.906)" font-family="sans-serif" font-size="13" text-anchor="middle" fill="#555">0.16</text>
+<text y="0" x="0" transform="translate(209.6 29.906)" font-family="sans-serif" font-size="13" text-anchor="middle" fill="#555">0.17</text>
+<text y="0" x="0" transform="translate(239.4 29.906)" font-family="sans-serif" font-size="13" text-anchor="middle" fill="#555">0.19</text>
+<text y="0" x="0" transform="translate(269.2 29.906)" font-family="sans-serif" font-size="13" text-anchor="middle" fill="#555">0.21</text>
+</g>
+</svg>
